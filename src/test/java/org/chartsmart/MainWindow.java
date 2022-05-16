@@ -72,23 +72,23 @@ public class MainWindow extends JPanel {
             if (e.getSource() == btnShowBarChart) {
                 openBarChart();
             } else if (e.getSource() == btnShowPieOrBarChart) {
-                IndvDsp cw = new IndvDsp();
-                cw.iniDS(getChartType(), "rpfll", true);
+                org.chartsmart.IndvDisplay cw = new org.chartsmart.IndvDisplay();
+                cw.toggleChart(getChartType(), "rpfll", true);
                 display(cw);
             } else {
-                IndvDsp cw = new IndvDsp();
-                cw.iniDS(getChartType(), getDisplayType(), true);
+                org.chartsmart.IndvDisplay cw = new org.chartsmart.IndvDisplay();
+                cw.toggleChart(getChartType(), getDisplayType(), true);
                 display(cw);
             }
         }
 
         private void openBarChart() {
-            IndvDsp cw = new IndvDsp();
-            cw.iniDS(406, "rpfll", true);
+            org.chartsmart.IndvDisplay cw = new org.chartsmart.IndvDisplay();
+            cw.toggleChart(true, "rpfll", true);
             display(cw);
         }
 
-        private void display(IndvDsp cw) {
+        private void display(org.chartsmart.IndvDisplay cw) {
             JFrame frame = new JFrame();
             frame.getContentPane().add(cw);
             frame.setLocation(150, 150);
@@ -106,11 +106,11 @@ public class MainWindow extends JPanel {
             }
         }
 
-        private int getChartType() {
+        private boolean getChartType() {
             if ((String) cboChartType.getSelectedItem() == "Bar Chart") {
-                return 406;
+                return true;
             } else {
-                return 323;
+                return false;
             }
         }
     }
