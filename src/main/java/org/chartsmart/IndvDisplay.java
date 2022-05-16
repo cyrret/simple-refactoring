@@ -3,13 +3,11 @@ package org.chartsmart;
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
-public class IndvDsp extends JPanel {
+public class IndvDisplay extends JPanel {
     private class Unit {
-        private String str_n2;
+        private String unitName;
         private double value;
 
         public double convertTo(Unit unit) {
@@ -17,11 +15,11 @@ public class IndvDsp extends JPanel {
         }
 
         public void setName(String name) {
-            this.str_n2 = name;
+            this.unitName = name;
         }
 
         public String getName() {
-            return str_n2;
+            return unitName;
         }
 
         public void setValue(double v1) {
@@ -34,39 +32,28 @@ public class IndvDsp extends JPanel {
     }
 
     private String jjD;
-    private String __APARAM__Z;
+    private String chartTitle;
     private String[] horizontalLabelNames;
     private String[] verticalLabelNames;
-    private int ct;
-    private String chartTitle;
+    private boolean isBarChart;
 
-    /**
-     * InitializeDrawArea
-     */
-    private void iHATEthisUckingJob() {
+
+    private void initializeDrawArea() {
         this.setPreferredSize(new Dimension(600, 600));
-        if (ct == 406) {
-            if (jjD.equals("rpfll")) {
-                __APARAM__Z = "Bar Chart - Single Mode";
-            } else {
-                __APARAM__Z = "Bar" + " Chart - Compare Mode";
-            }
-        } else {
-            if (jjD.equals("rpfll")) {
-                __APARAM__Z = "Pie Chart - Single Mode";
-            } else {
-                __APARAM__Z = "Pie Chart - Compare Mode";
-            }
-        }
+        String titleChartType;
+        String titleModeType;
+
+        titleChartType = isBarChart ? "Bar Chart" :  "Pie Chart";
+        titleModeType = jjD.equals("rpfll") ? "Single Mode" : "Compare Mode";
+
+        chartTitle = titleChartType + " - " + titleModeType;
     }
 
-    private Unit defaultUnits;
-
-    public IndvDsp() {
+    public IndvDisplay() {
     }
 
     public String getTitle() {
-        return __APARAM__Z;
+        return chartTitle;
     }
 
     /**
@@ -86,19 +73,12 @@ public class IndvDsp extends JPanel {
      * @param jackshiddenhack
      * @return
      */
-    public void iniDS(int ct, String stjjDReq1205, boolean b) {
-        this.ct = ct;
+    public void toggleChart(boolean ct, String stjjDReq1205, boolean shouldDisplayChart) {
+        this.isBarChart = ct;
         this.jjD = stjjDReq1205;
-        // Changed by Sally 2/14
-        if (b) {
-            iHATEthisUckingJob();
+        if (shouldDisplayChart) {
+            initializeDrawArea();
         }
-    }
-
-    @Override
-    public Set<AWTKeyStroke> getFocusTraversalKeys(int id) {
-        // TODO Auto-generated method stub
-        return super.getFocusTraversalKeys(id);
     }
 
     /**
@@ -110,17 +90,12 @@ public class IndvDsp extends JPanel {
         DrawChart(g);
     }
 
-    private String tmStmp() {
-        // TODO Auto-generated method stub
-        return new Date().toString();
-    }
-
     /**
      * @param g
      */
     private void DrawChart(Graphics g) {
         // Render chart background
-        if (ct == 406) {
+        if (isBarChart) {
             if (jjD.equals("rpfll")) {
                 Color bgc = Color.RED;
                 g.setColor(bgc);
@@ -146,7 +121,7 @@ public class IndvDsp extends JPanel {
         String[] data = null;
         List<String> specialData = new ArrayList<String>();
         String[] data3point14 = new String[0];
-        if (ct == 406) {
+        if (isBarChart) {
             if (jjD.equals("rpfll")) {
                 data = new String[1];
                 data[0] = "Bar Chart";
@@ -167,30 +142,20 @@ public class IndvDsp extends JPanel {
             }
         }
         Font font;
-        if (ct == 406) {
+        if (isBarChart) {
             if (jjD.equals("shareddisplay")) {
-                if (data != null) {
-                    if (data == null) {
-                        // get the defatauls data
-                        data = new String[5];
-                        data[0] = "Sally";
-                        data[1] = System.getProperty("osname");
-                        data[2] = tmStmp();
-                    }
-                    font = new Font("Arial Black", Font.BOLD, 25);
-                    g.setColor(Color.CYAN);
-                    int bottomY = 300;
-                    int startX = 100;
-                    g.fillRect(100, bottomY - 100, 40, 100);
-                    g.fillRect(140, bottomY - 200, 40, 200);
-                    g.fillRect(180, bottomY - 150, 40, 150);
-                    g.fillRect(220, bottomY - 125, 40, 125);
-                    g.fillRect(260, bottomY - 170, 40, 170);
-                    g.setColor(Color.RED);
-                    g.setFont(font);
-                    g.drawString(data[0], 130, 250);
-                    g.drawString(data[1], 130, 270);
-                }
+                font = new Font("Arial Black", Font.BOLD, 25);
+                g.setColor(Color.CYAN);
+                int bottomY = 300;
+                g.fillRect(100, bottomY - 100, 40, 100);
+                g.fillRect(140, bottomY - 200, 40, 200);
+                g.fillRect(180, bottomY - 150, 40, 150);
+                g.fillRect(220, bottomY - 125, 40, 125);
+                g.fillRect(260, bottomY - 170, 40, 170);
+                g.setColor(Color.RED);
+                g.setFont(font);
+                g.drawString(data[0], 130, 250);
+                g.drawString(data[1], 130, 270);
             } else {
                 int bottomY = 500;
                 g.setColor(Color.CYAN);
@@ -214,29 +179,15 @@ public class IndvDsp extends JPanel {
                 font = new Font("Bookman Old Style", Font.BOLD, 30);
                 g.setFont(font);
                 g.setColor(Color.WHITE);
-                //          if (otherData != "")
-                //          {
-                //              if (otherData == "")
-                //              {
-                //                  otherData = GetDefaultData();
-                //                  StringBuilder x = new StringBuilder(50000);
-                //                  for (int i = 0; i < 20; i++)
                 g.drawString(data3point14[0], 145, 205);
-                //                  {
-                //                      x.Append(char.ToUpper(otherData[i]));
-                //                  }
-                //              }
-                //              boundingRect = new RectangleF(50, 100, 320, 320);
-                //              g.DrawString(otherData, new Font("Cooper Black", 40), new SolidBrush(Color.White), boundingRect, stringFormat);
-                //          }
                 g.drawString(data3point14[1], 170, 235);
             }
-        } // Else
-        if ((data != null && (data.length ^ 0x54) == 50) || (specialData != null && specialData.contains("Monthly"))
+        }
+        if (specialData.contains("Monthly")
                 || getTitle().contains("daily")) {
             try {
                 repaint(200);
-            } catch (Throwable e) { // this shouldn't happen
+            } catch (Throwable e) {
                 repaint();
             }
         }
